@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UNO Multiplayer</title>
+  <style>
+    body { font-family: Arial; background:#111; color:white; text-align:center; }
+    button { padding:12px 20px; font-size:16px; margin:5px; }
+  </style>
+</head>
+<body>
+
+<h1>UNO ONLINE</h1>
+
+<input id="room" placeholder="Room ID">
+<br><br>
+<button onclick="createRoom()">Buat Room</button>
+<button onclick="joinRoom()">Join Room</button>
+
+<p id="status"></p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+const status = document.getElementById("status");
+
+function createRoom(){
+  const room = document.getElementById("room").value || "room123";
+  socket.emit("createRoom", room);
+}
+
+function joinRoom(){
+  const room = document.getElementById("room").value;
+  socket.emit("joinRoom", room);
+}
+
+socket.on("roomCreated", (room)=>{
+  status.innerText = "Room dibuat: " + room;
+});
+
+socket.on("roomJoined", (room)=>{
+  status.innerText = "Masuk ke room: " + room;
+});
+
+socket.on("playerJoined", ()=>{
+  status.innerText = "Pemain lain sudah masuk!";
+});
+</script>
+
+</body>
+</html>
